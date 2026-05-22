@@ -2,7 +2,6 @@
 import { useState } from 'react'
 import { motion } from 'framer-motion'
 import { Send, Mail, Github, Linkedin, MessageCircle, CheckCircle } from 'lucide-react'
-import emailjs from '@emailjs/browser'
 import { PERSONAL } from '@/lib/data'
 
 export default function ContactSection() {
@@ -11,38 +10,42 @@ export default function ContactSection() {
   const [sent, setSent] = useState(false)
   const [error, setError] = useState(false)
 
-  const handleSubmit = async (e: React.MouseEvent) => {
-  e.preventDefault()
-  if (!form.name || !form.email || !form.message) return
-  setSending(true)
-  setError(false)
-
-  try {
-    const res = await fetch('https://api.web3forms.com/submit', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        access_key: '918fcdf8-da7f-4922-afcb-2663c649f284',
-        name: form.name,
-        email: form.email,
-        message: form.message,
-      }),
-    })
-
-    const data = await res.json()
-    if (data.success) {
-      setSent(true)
-      setForm({ name: '', email: '', message: '' })
-      setTimeout(() => setSent(false), 5000)
-    } else {
-      setError(true)
-    }
-  } catch (err) {
-    setError(true)
-  } finally {
-    setSending(false)
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+    setForm(prev => ({ ...prev, [e.target.name]: e.target.value }))
   }
-}
+
+  const handleSubmit = async (e: React.MouseEvent) => {
+    e.preventDefault()
+    if (!form.name || !form.email || !form.message) return
+    setSending(true)
+    setError(false)
+
+    try {
+      const res = await fetch('https://api.web3forms.com/submit', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          access_key: '918fcdf8-da7f-4922-afcb-2663c649f284',
+          name: form.name,
+          email: form.email,
+          message: form.message,
+        }),
+      })
+
+      const data = await res.json()
+      if (data.success) {
+        setSent(true)
+        setForm({ name: '', email: '', message: '' })
+        setTimeout(() => setSent(false), 5000)
+      } else {
+        setError(true)
+      }
+    } catch (err) {
+      setError(true)
+    } finally {
+      setSending(false)
+    }
+  }
 
   const socials = [
     { icon: Github, label: 'GitHub', value: '@mshayatdev', href: PERSONAL.github },
@@ -68,12 +71,10 @@ export default function ContactSection() {
         </motion.div>
 
         <div className="grid lg:grid-cols-2 gap-10">
-          {/* Left: contact info */}
           <motion.div
             initial={{ opacity: 0, x: -30 }}
             whileInView={{ opacity: 1, x: 0 }}
             viewport={{ once: true }}
-            className="space-y-5"
           >
             <div className="glass rounded-3xl p-8">
               <h3 className="font-display text-xl font-bold text-white mb-2">Ready to start a project?</h3>
@@ -103,7 +104,6 @@ export default function ContactSection() {
             </div>
           </motion.div>
 
-          {/* Right: form */}
           <motion.div
             initial={{ opacity: 0, x: 30 }}
             whileInView={{ opacity: 1, x: 0 }}
@@ -146,7 +146,6 @@ export default function ContactSection() {
                 />
               </div>
 
-              {/* Error message */}
               {error && (
                 <p className="text-red-400 text-sm text-center">
                   ❌ Message send nahi hua — dobara try karo!
