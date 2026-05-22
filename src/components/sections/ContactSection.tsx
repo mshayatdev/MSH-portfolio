@@ -19,7 +19,6 @@ export default function ContactSection() {
     if (!form.name || !form.email || !form.message) return
     setSending(true)
     setError(false)
-
     try {
       const res = await fetch('https://api.web3forms.com/submit', {
         method: 'POST',
@@ -31,7 +30,6 @@ export default function ContactSection() {
           message: form.message,
         }),
       })
-
       const data = await res.json()
       if (data.success) {
         setSent(true)
@@ -57,7 +55,6 @@ export default function ContactSection() {
   return (
     <section id="contact" className="section-padding px-6 relative">
       <div className="orb w-[500px] h-[500px] bg-brand-700 bottom-0 left-0" />
-
       <div className="max-w-6xl mx-auto relative z-10">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
@@ -69,7 +66,6 @@ export default function ContactSection() {
           <h2 className="font-display text-4xl md:text-5xl font-bold text-white mt-2">Get In Touch</h2>
           <p className="text-slate-500 mt-3 max-w-xl mx-auto">Have a project in mind? Let's talk about how I can help bring your vision to life.</p>
         </motion.div>
-
         <div className="grid lg:grid-cols-2 gap-10">
           <motion.div
             initial={{ opacity: 0, x: -30 }}
@@ -103,7 +99,6 @@ export default function ContactSection() {
               </div>
             </div>
           </motion.div>
-
           <motion.div
             initial={{ opacity: 0, x: 30 }}
             whileInView={{ opacity: 1, x: 0 }}
@@ -145,13 +140,11 @@ export default function ContactSection() {
                   className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-white text-sm placeholder-slate-600 focus:outline-none focus:border-brand-500/50 focus:bg-brand-500/5 transition-all resize-none"
                 />
               </div>
-
               {error && (
                 <p className="text-red-400 text-sm text-center">
                   ❌ Message send nahi hua — dobara try karo!
                 </p>
               )}
-
               <motion.button
                 whileHover={{ scale: 1.02 }}
                 whileTap={{ scale: 0.98 }}
