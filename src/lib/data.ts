@@ -115,7 +115,6 @@ export const EXPERIENCE = [
     title: 'Frontend Developer',
     company: 'Hayzel-Technology',
     description: 'Built responsive and user-friendly web interfaces using HTML, CSS, JavaScript, Bootstrap, Tailwind CSS, and React.js. Developed modern dashboards, landing pages, CRUD systems, and dynamic frontend components with optimized performance and clean UI/UX.',
-',
     highlights: ['Responsive UI Design', 'React & Tailwind CSS', 'Dynamic Web Applications'],
   },
   {
