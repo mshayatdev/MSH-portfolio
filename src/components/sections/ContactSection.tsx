@@ -2,12 +2,14 @@
 import { useState } from 'react'
 import { motion } from 'framer-motion'
 import { Send, Mail, Github, Linkedin, MessageCircle, CheckCircle } from 'lucide-react'
+import emailjs from '@emailjs/browser'
 import { PERSONAL } from '@/lib/data'
 
 export default function ContactSection() {
   const [form, setForm] = useState({ name: '', email: '', message: '' })
   const [sending, setSending] = useState(false)
   const [sent, setSent] = useState(false)
+  const [error, setError] = useState(false)
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     setForm(prev => ({ ...prev, [e.target.name]: e.target.value }))
@@ -17,12 +19,28 @@ export default function ContactSection() {
     e.preventDefault()
     if (!form.name || !form.email || !form.message) return
     setSending(true)
-    // Simulate send (replace with your API/Resend/EmailJS etc.)
-    await new Promise(r => setTimeout(r, 1500))
-    setSending(false)
-    setSent(true)
-    setForm({ name: '', email: '', message: '' })
-    setTimeout(() => setSent(false), 4000)
+    setError(false)
+
+    try {
+      await emailjs.send(
+        'service_5ndwx8f',
+        'template_o0mmds2',
+        {
+          name: form.name,
+          email: form.email,
+          message: form.message,
+          time: new Date().toLocaleString(),
+        },
+        'dIXRWo9hnzHAYLDie'
+      )
+      setSent(true)
+      setForm({ name: '', email: '', message: '' })
+      setTimeout(() => setSent(false), 5000)
+    } catch (err) {
+      setError(true)
+    } finally {
+      setSending(false)
+    }
   }
 
   const socials = [
@@ -126,6 +144,14 @@ export default function ContactSection() {
                   className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-white text-sm placeholder-slate-600 focus:outline-none focus:border-brand-500/50 focus:bg-brand-500/5 transition-all resize-none"
                 />
               </div>
+
+              {/* Error message */}
+              {error && (
+                <p className="text-red-400 text-sm text-center">
+                  ❌ Message send nahi hua — dobara try karo!
+                </p>
+              )}
+
               <motion.button
                 whileHover={{ scale: 1.02 }}
                 whileTap={{ scale: 0.98 }}
@@ -134,7 +160,7 @@ export default function ContactSection() {
                 className="w-full flex items-center justify-center gap-2 py-3.5 rounded-xl bg-gradient-to-r from-brand-600 to-brand-400 text-white font-semibold hover:shadow-glow-teal transition-all duration-300 disabled:opacity-70 disabled:cursor-not-allowed"
               >
                 {sent ? (
-                  <><CheckCircle size={17} /> Message Sent!</>
+                  <><CheckCircle size={17} /> Message Sent! ✅</>
                 ) : sending ? (
                   <><div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" /> Sending...</>
                 ) : (
