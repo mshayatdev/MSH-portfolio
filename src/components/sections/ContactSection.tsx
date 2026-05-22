@@ -11,37 +11,38 @@ export default function ContactSection() {
   const [sent, setSent] = useState(false)
   const [error, setError] = useState(false)
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
-    setForm(prev => ({ ...prev, [e.target.name]: e.target.value }))
-  }
-
   const handleSubmit = async (e: React.MouseEvent) => {
-    e.preventDefault()
-    if (!form.name || !form.email || !form.message) return
-    setSending(true)
-    setError(false)
+  e.preventDefault()
+  if (!form.name || !form.email || !form.message) return
+  setSending(true)
+  setError(false)
 
-    try {
-      await emailjs.send(
-        'service_5ndwx8f',
-        'template_o0mmds2',
-        {
-          name: form.name,
-          email: form.email,
-          message: form.message,
-          time: new Date().toLocaleString(),
-        },
-        'dIXRWo9hnzHAYLDie'
-      )
+  try {
+    const res = await fetch('https://api.web3forms.com/submit', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        access_key: '918fcdf8-da7f-4922-afcb-2663c649f284',
+        name: form.name,
+        email: form.email,
+        message: form.message,
+      }),
+    })
+
+    const data = await res.json()
+    if (data.success) {
       setSent(true)
       setForm({ name: '', email: '', message: '' })
       setTimeout(() => setSent(false), 5000)
-    } catch (err) {
+    } else {
       setError(true)
-    } finally {
-      setSending(false)
     }
+  } catch (err) {
+    setError(true)
+  } finally {
+    setSending(false)
   }
+}
 
   const socials = [
     { icon: Github, label: 'GitHub', value: '@mshayatdev', href: PERSONAL.github },
